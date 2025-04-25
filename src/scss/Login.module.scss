@@ -1,0 +1,32 @@
+#get-started {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(20, 0, 34);
+}
+.get-started {
+    position: absolute;
+    bottom: 10%;
+    padding-right: 15px;
+    &-title {
+        font-size: 42px;
+        font-weight: 700;
+        max-width: 80%;
+        color: #fff;
+        span {
+            color: rgb(143, 59, 199);
+        }
+    }
+    &-button {
+        margin-top: 100px;
+        width: 100%;
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            background-color: rgb(143, 59, 199);
+        }
+    }
+}

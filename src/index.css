@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Sora';
+  src: url('./assets/fonts/Sora/static/Sora-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sora';
+  src: url('./assets/fonts/Sora/static/Sora-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -6,4 +20,17 @@
   *, *::before,
   *::after {
     box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Sora', sans-serif;
+  }  
+  button {
+    font-family: 'Sora', sans-serif;
+  }
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 12px;
   }
