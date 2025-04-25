@@ -1,10 +1,19 @@
-import HomeP from "./pages/HomeP";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { lazy, Suspense } from "react";
+import EnteranceP from "./pages/EnteranceP";
+
+const HomeP = lazy(() => import("./pages/HomeP"));
 
 function App() {
   return (
-    <>
-      <HomeP/>
-    </>
+    <BrowserRouter>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route index element={<EnteranceP />} />
+          <Route path="/home" element={<HomeP />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 }
 
