@@ -5,7 +5,7 @@
 }
 .get-started {
     position: absolute;
-    bottom: 10%;
+    bottom: 5%;
     padding-right: 15px;
     &-title {
         font-size: 42px;
@@ -17,16 +17,35 @@
         }
     }
     &-button {
-        margin-top: 100px;
+        margin-top: 20%;
         width: 100%;
+        display: flex;
+        gap: 20px;
+        a {
+            display: block;
+            width: 100%;
+        }
         button {
             display: block;
             width: 100%;
+            font-weight: 600;
             padding: 14px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 20px;
             color: #fff;
             background-color: rgb(143, 59, 199);
+        }
+        &-active {
+            color: rgb(143, 59, 199) !important;
+            background-color: #fff !important;
+        }
+    }
+    &-terms {
+        margin-top: 10%;
+        text-align: center;
+        font-size: 12px;
+        a {
+            color: #0000EE !important;
         }
     }
 }
