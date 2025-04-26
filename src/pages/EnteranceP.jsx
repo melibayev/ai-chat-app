@@ -20,11 +20,11 @@ const EnteranceP = () => {
         videoRef.current.pause();
         videoRef.current.currentTime = 0; // Optional: reset
       }
-      navigate('/home', { replace: true }); // No back navigation
+      navigate('/get-started', { replace: true }); // No back navigation
     }, 4000);
 
     // Block back button
-    const handlePopState = () => navigate('/home', { replace: true });
+    const handlePopState = () => navigate('/get-started', { replace: true });
     window.addEventListener('popstate', handlePopState);
 
     return () => {
