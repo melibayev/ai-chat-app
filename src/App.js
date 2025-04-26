@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import EnteranceP from "./pages/EnteranceP";
 import GetStartedP from "./pages/GetStartedP";
 import RegisterP from "./pages/RegisterP";
@@ -8,15 +8,24 @@ import LoginP from "./pages/LoginP";
 const ChatP = lazy(() => import("./pages/ChatP"));
 
 function App() {
-  const [user, setUser] = useState(null); // Store logged-in user
+  const [user, setUser] = useState(null);
 
   const handleLogin = (loggedInUser) => {
-    setUser(loggedInUser); // Update user state when logged in
+    setUser(loggedInUser);
+    localStorage.setItem('user', JSON.stringify(loggedInUser));
   };
 
   const handleLogout = () => {
-    setUser(null); // Clear user on logout
+    setUser(null);
+    localStorage.removeItem('user');
   };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <BrowserRouter>
@@ -25,7 +34,7 @@ function App() {
           <Route index element={<EnteranceP />} />
           <Route path="/get-started" element={<GetStartedP />} />
           <Route path="/login" element={<LoginP onLogin={handleLogin} />} />
-          <Route path="/register" element={<RegisterP onLogin={handleLogin} />} /> {/* Pass handleLogin */}
+          <Route path="/register" element={<RegisterP onLogin={handleLogin} />} />
           <Route
             path="/chat"
             element={user ? <ChatP user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}

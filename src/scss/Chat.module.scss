@@ -1,0 +1,124 @@
+.chat {
+    padding: 0 15px;
+    width: 100vw;
+    height: 100vh;
+    &-container {
+        width: 100%;
+        height: 78%;
+        overflow: scroll;
+    }
+}
+
+.chat-title {
+    display: flex;
+    align-items: center;
+    column-gap: 50px;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    div {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid #f0efff;
+        font-size: 32px;
+        background-color: #151820;
+        border-radius: 22px;
+        svg {
+            color: #fff;
+        }
+    }
+    h2 {
+        font-size: 48px;
+        color: #fff;
+    }
+}
+
+.chat-user {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    column-gap: 24px;
+    margin-bottom: 32px;
+    &-avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background-color: #fff;
+        border-radius: 50%;
+    }
+    &-message {
+        width: 100%;
+        padding: 20px 12px;
+        font-size: 18px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 0px;
+        background-color: red;
+    }
+}
+
+.chat-ai {
+    display: flex;
+    align-items: flex-end;
+    column-gap: 24px;
+    margin-bottom: 32px;
+    &-avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background-color: #fff;
+        border-radius: 50%;
+    }
+    &-message {
+        width: 100%;
+        padding: 20px 12px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 20px;
+        background-color: green;
+    }
+}
+
+.chat-input {
+    position: fixed;
+    width: calc(100% - 30px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 2%); /* ✅ Smart for iPhone with notches! */
+    display: flex;
+    justify-content: center;
+    column-gap: 24px;
+    padding: 10px 0;
+    border-radius: 16px;
+    background-color: #fff;
+
+    input {
+        padding: 24px;
+        width: 70%;
+        font-size: 24px;
+        border: none;
+        border-radius: 16px;
+        background-color: #f0efff;
+        &:focus, &:hover {
+            border: none;
+            outline: none;
+        }
+    }
+    button {
+        padding: 8px 24px;
+        font-size: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 16px;
+        background-color: #f0efff;
+    }
+}
+
+

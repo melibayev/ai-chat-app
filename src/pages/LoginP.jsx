@@ -1,27 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { fetchUsers } from '../api'; // Assuming you have the function to fetch users
+import { useNavigate } from 'react-router-dom';
+import { fetchUsers } from '../api';
 
 const LoginP = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [allUsers, setAllUsers] = useState([]);
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch all users
     fetchUsers()
       .then(response => setAllUsers(response.data))
       .catch(err => console.error('Error fetching users:', err));
   }, []);
+
+  useEffect(() => {
+    // check if user already logged in
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      navigate('/chat');
+    }
+  }, [navigate]);  // run when navigate is ready
 
   const handleLogin = () => {
     const foundUser = allUsers.find(
       (user) => user.username === username && user.password === password
     );
     if (foundUser) {
-      onLogin(foundUser);  // Pass the logged-in user to App.js
-      navigate('/chat');  // Redirect to /chat after login
+      onLogin(foundUser);
+      navigate('/chat');
     } else {
       alert('Invalid credentials!');
     }
