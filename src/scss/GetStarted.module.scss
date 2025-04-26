@@ -5,10 +5,10 @@
 }
 .get-started {
     position: absolute;
-    bottom: 5%;
+    bottom: 7%;
     padding-right: 15px;
     &-title {
-        font-size: 42px;
+        font-size: 64px;
         font-weight: 700;
         max-width: 80%;
         color: #fff;
@@ -20,6 +20,7 @@
         margin-top: 20%;
         width: 100%;
         display: flex;
+        flex-direction: column;
         gap: 20px;
         a {
             display: block;
@@ -28,6 +29,7 @@
         button {
             display: block;
             width: 100%;
+            font-size: 18px;
             font-weight: 600;
             padding: 14px 24px;
             border: none;
