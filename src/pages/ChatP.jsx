@@ -6,8 +6,8 @@ import { FaChevronLeft } from "react-icons/fa";
 
 const ChatP = ({ user, onLogout }) => {
   const [input, setInput] = useState('');
-  const [allChats, setAllChats] = useState([]); // all chats
-  const [currentChatIndex, setCurrentChatIndex] = useState(0); // which chat is active
+  const [allChats, setAllChats] = useState([]);
+  const [currentChatIndex, setCurrentChatIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -22,9 +22,9 @@ const ChatP = ({ user, onLogout }) => {
           const saved = JSON.parse(localStorage.getItem(`chat_${user.id}`));
           if (saved && saved.chats) {
             setAllChats(saved.chats);
-            setCurrentChatIndex(0); // open the first chat by default
+            setCurrentChatIndex(0);
           } else {
-            setAllChats([[]]); // start with one empty chat
+            setAllChats([[]]);
           }
         } catch (error) {
           console.error('Error loading chats from localStorage:', error);
@@ -41,7 +41,14 @@ const ChatP = ({ user, onLogout }) => {
   }, [allChats, currentChatIndex]);
 
   const saveChatsToStorage = (updatedChats) => {
-    localStorage.setItem(`chat_${user.id}`, JSON.stringify({ chats: updatedChats }));
+    if (!user) return;
+
+    const dataToSave = {
+      username: user.username,
+      chats: updatedChats,
+    };
+
+    localStorage.setItem(`chat_${user.id}`, JSON.stringify(dataToSave));
   };
 
   const handleSend = async () => {
@@ -76,10 +83,16 @@ const ChatP = ({ user, onLogout }) => {
   };
 
   const handleNewChat = () => {
-    const updatedChats = [...allChats, []]; // add new empty chat
+    const updatedChats = [...allChats, []];
     setAllChats(updatedChats);
-    setCurrentChatIndex(updatedChats.length - 1); // switch to the new chat
+    setCurrentChatIndex(updatedChats.length - 1);
     saveChatsToStorage(updatedChats);
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
   };
 
   if (!user) {
@@ -91,17 +104,26 @@ const ChatP = ({ user, onLogout }) => {
   return (
     <div className={styles['chat']}>
       <div className={styles['chat-title']}>
-        <div>
+        <div className="flex items-center gap-2">
           <FaChevronLeft />
+          <h2 className="text-xl font-bold">Chat</h2>
         </div>
-        <h2 className="text-xl font-bold">Chat</h2>
 
-        <button 
-          onClick={handleNewChat}
-          className="ml-auto px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-        >
-          New Chat
-        </button>
+        <div className="ml-auto flex gap-2">
+          <button 
+            onClick={handleNewChat}
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          >
+            New Chat
+          </button>
+
+          <button 
+            onClick={handleLogout}
+            className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className={styles['chat-container']}>
