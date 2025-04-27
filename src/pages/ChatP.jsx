@@ -4,6 +4,9 @@ import styles from '../scss/Chat.module.scss';
 import { FiSend } from "react-icons/fi";
 import { FaChevronLeft } from "react-icons/fa";
 
+import AI_IMAGE from '../assets/images/ai.jpg'
+import USER_IMAGE from '../assets/images/user.jpg'
+
 const ChatP = ({ user, onLogout }) => {
   const [input, setInput] = useState('');
   const [allChats, setAllChats] = useState([]);
@@ -131,12 +134,16 @@ const ChatP = ({ user, onLogout }) => {
           <div key={i} className="space-y-2">
             {m.role === 'user' ? (
               <div className={styles['chat-user']}>
-                <div className={styles['chat-user-avatar']}></div>
+                <div className={styles['chat-user-avatar']}>
+                  <img src={USER_IMAGE} alt="" />
+                </div>
                 <div className={styles['chat-user-message']}>{m.content}</div>
               </div>
             ) : (
               <div className={styles['chat-ai']}>
-                <div className={styles['chat-ai-avatar']}></div>
+                <div className={styles['chat-ai-avatar']}>
+                  <img src={AI_IMAGE} alt="" />
+                </div>
                 <div className={styles['chat-ai-message']}>{m.content}</div>
               </div>
             )}

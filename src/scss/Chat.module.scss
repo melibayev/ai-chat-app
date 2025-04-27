@@ -45,9 +45,10 @@
         justify-content: center;
         align-items: center;
         width: 50px;
-        height: 50px;
-        background-color: #fff;
-        border-radius: 50%;
+        img {
+            width: 100%;
+            border-radius: 50%;
+        }
     }
     &-message {
         width: 100%;
@@ -57,7 +58,10 @@
         border-top-right-radius: 20px;
         border-bottom-left-radius: 20px;
         border-bottom-right-radius: 0px;
-        background-color: red;
+        color: #151820;
+        background-color: #f9cbdf;
+        background-color: #b65fcf;
+
     }
 }
 
@@ -71,9 +75,10 @@
         justify-content: center;
         align-items: center;
         width: 50px;
-        height: 50px;
-        background-color: #fff;
-        border-radius: 50%;
+        img {
+            width: 100%;
+            border-radius: 50%;
+        }
     }
     &-message {
         width: 100%;
@@ -82,7 +87,8 @@
         border-top-right-radius: 20px;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 20px;
-        background-color: green;
+        color: #151820;
+        background-color: #f9cbdf;
     }
 }
 
