@@ -43,7 +43,7 @@ const ChatP = ({ user, onLogout }) => {
   // Scroll when a new message is added, including AI and user messages.
   useEffect(() => {
     scrollToBottom();
-  }, [allChats, currentChatIndex, isLoading]); // Add input and isLoading to the dependency array
+  }, [allChats, currentChatIndex, input, isLoading]); // Add input and isLoading to the dependency array
 
   const saveChatsToStorage = (updatedChats) => {
     if (!user) return;

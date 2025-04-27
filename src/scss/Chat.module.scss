@@ -94,7 +94,7 @@
 }
 
 .chat-input {
-    position: fixed;
+    position: absolute;
     left: 0;
     width: 100%;
     bottom: calc(env(safe-area-inset-bottom, 0px)); /* ✅ Smart for iPhone with notches! */
