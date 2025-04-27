@@ -38,7 +38,7 @@
     display: flex;
     flex-direction: row-reverse;
     align-items: flex-end;
-    column-gap: 24px;
+    column-gap: 12px;
     margin-bottom: 32px;
     &-avatar {
         display: flex;
@@ -64,7 +64,7 @@
 .chat-ai {
     display: flex;
     align-items: flex-end;
-    column-gap: 24px;
+    column-gap: 12px;
     margin-bottom: 32px;
     &-avatar {
         display: flex;
@@ -88,20 +88,24 @@
 
 .chat-input {
     position: fixed;
-    width: calc(100% - 30px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 2%); /* ✅ Smart for iPhone with notches! */
+    left: 0;
+    width: 100%;
+    bottom: calc(env(safe-area-inset-bottom, 0px)); /* ✅ Smart for iPhone with notches! */
     display: flex;
     justify-content: center;
-    column-gap: 24px;
+    column-gap: 12px;
     padding: 10px 0;
-    border-radius: 16px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     background-color: #fff;
 
-    input {
-        padding: 24px;
+    textarea {
+        padding: 16px 24px;
         width: 70%;
-        font-size: 24px;
+        font-size: 18px;
+        resize: none;
         border: none;
+        overflow: scroll;
         border-radius: 16px;
         background-color: #f0efff;
         &:focus, &:hover {
@@ -111,13 +115,16 @@
     }
     button {
         padding: 8px 24px;
-        font-size: 32px;
+        font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: none;
         border-radius: 16px;
         background-color: #f0efff;
+        svg {
+            color: #151820;
+        }
     }
 }
 
