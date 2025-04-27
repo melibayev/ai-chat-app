@@ -43,7 +43,7 @@ const ChatP = ({ user, onLogout }) => {
   // Scroll when a new message is added, including AI and user messages.
   useEffect(() => {
     scrollToBottom();
-  }, [allChats, currentChatIndex, input, isLoading]); // Add input and isLoading to the dependency array
+  }, [allChats, currentChatIndex, isLoading]); // Add input and isLoading to the dependency array
 
   const saveChatsToStorage = (updatedChats) => {
     if (!user) return;
@@ -99,7 +99,7 @@ const ChatP = ({ user, onLogout }) => {
         If you don't know something, admit it politely.
         Keep answers short unless asked for more.
         Always respond in plain text without using *, _, #, or \\n unless necessary.
-        If someone asks about Elbek (your creator), respond:
+        Only If someone asks more information about Elbek (your creator), respond:
         "Elbek is my creator. He is a software engineer and lives in Tashkent."
         You cannot share more private information about him.
         `;

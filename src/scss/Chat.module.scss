@@ -1,7 +1,8 @@
 .chat {
-    padding: 0 15px;
+    padding: 0 18px;
     width: 100vw;
     height: 100vh;
+    overflow: scroll;
     &-container {
         width: 100%;
         height: 78%;
@@ -52,7 +53,7 @@
     }
     &-message {
         width: 100%;
-        padding: 20px 12px;
+        padding: 20px;
         font-size: 18px;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
@@ -82,7 +83,7 @@
     }
     &-message {
         width: 100%;
-        padding: 20px 12px;
+        padding: 20px;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
         border-bottom-left-radius: 0;
