@@ -57,3 +57,20 @@
         }
     }
 }
+.or-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    span {
+        padding: 0 10px;  
+        font-weight: bold; 
+    }
+  }
+  
+  .or-divider::before,
+  .or-divider::after {
+    content: "";
+    flex-grow: 1;
+    border-top: 1px solid #9e9e9e;  // Line style (you can adjust color)
+  }
