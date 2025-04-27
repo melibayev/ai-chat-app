@@ -10,13 +10,13 @@ const LoginP = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
-  useEffect(() => {
-    // Wait for the Google login button to be rendered and then change the text
-    const googleButtonSpan = document.querySelector('[role="button"] span');
-    if (googleButtonSpan) {
-      googleButtonSpan.textContent = "Continue with Google"; // Change text after component mounts
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Wait for the Google login button to be rendered and then change the text
+  //   const googleButtonSpan = document.querySelector('[role="button"] span');
+  //   if (googleButtonSpan) {
+  //     googleButtonSpan.textContent = "Continue with Google"; // Change text after component mounts
+  //   }
+  // }, []);
 
   useEffect(() => {
     fetchUsers()
@@ -105,6 +105,7 @@ const LoginP = ({ onLogin }) => {
             onSuccess={handleGoogleLogin} // on successful login
             onError={() => alert("Google login failed!")}
             useOneTap  // Optional: Enables one-tap login for a smoother experience
+            prompt="select_account"
           />
         </div>
       </div>

@@ -11,13 +11,13 @@ function RegisterP({ onLogin }) {
   const [isLoading, setIsLoading] = useState(false);  // Add loading state
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Wait for the Google login button to be rendered and then change the text
-    const googleButtonSpan = document.querySelector('[role="button"] span');
-    if (googleButtonSpan) {
-      googleButtonSpan.textContent = "Continue with Google"; // Change text after component mounts
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Wait for the Google login button to be rendered and then change the text
+  //   const googleButtonSpan = document.querySelector('[role="button"] span');
+  //   if (googleButtonSpan) {
+  //     googleButtonSpan.textContent = "Continue with Google"; // Change text after component mounts
+  //   }
+  // }, []);
 
   const handleRegister = async () => {
     setIsLoading(true);  // Set loading state
@@ -112,6 +112,7 @@ function RegisterP({ onLogin }) {
             onSuccess={handleGoogleLogin} // on successful login
             onError={() => alert("Google login failed!")}
             useOneTap  // Optional: Enables one-tap login for a smoother experience
+            prompt="select_account"
           />
         </div>
       </div>
