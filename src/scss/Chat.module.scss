@@ -12,18 +12,18 @@
 .chat-title {
     display: flex;
     align-items: center;
-    column-gap: 50px;
+    column-gap: 30px;
     padding: 20px 0;
     margin-bottom: 20px;
     div {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        padding: 16px;
+        padding: 12px;
         border: 1px solid #f0efff;
-        font-size: 32px;
+        font-size: 28px;
         background-color: #151820;
-        border-radius: 22px;
+        border-radius: 24px;
         svg {
             color: #fff;
         }

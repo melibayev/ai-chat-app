@@ -12,9 +12,10 @@ const ChatP = ({ user, onLogout }) => {
   const [allChats, setAllChats] = useState([]);
   const [currentChatIndex, setCurrentChatIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef(null); // reference to scroll to bottom
 
   const scrollToBottom = () => {
+    // Scroll to the bottom to show the latest message
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -39,9 +40,10 @@ const ChatP = ({ user, onLogout }) => {
     fetchChats();
   }, [user]);
 
+  // Scroll when a new message is added, including AI and user messages.
   useEffect(() => {
     scrollToBottom();
-  }, [allChats, currentChatIndex]);
+  }, [allChats, currentChatIndex, input, isLoading]); // Add input and isLoading to the dependency array
 
   const saveChatsToStorage = (updatedChats) => {
     if (!user) return;
@@ -107,10 +109,10 @@ const ChatP = ({ user, onLogout }) => {
   return (
     <div className={styles['chat']}>
       <div className={styles['chat-title']}>
-        <div className="flex items-center gap-2">
+          <div>
           <FaChevronLeft />
+          </div>
           <h2 className="text-xl font-bold">Chat</h2>
-        </div>
 
         <div className="ml-auto flex gap-2">
           <button 
@@ -152,7 +154,9 @@ const ChatP = ({ user, onLogout }) => {
 
         {isLoading && (
           <div className={styles['chat-ai']}>
-            <div className={styles['chat-ai-avatar']}></div>
+            <div className={styles['chat-ai-avatar']}>
+              <img src={AI_IMAGE} alt="" />
+            </div>
             <div className={styles['chat-ai-message']}>Typing...</div>
           </div>
         )}
