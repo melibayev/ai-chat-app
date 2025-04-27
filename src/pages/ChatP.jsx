@@ -56,28 +56,88 @@ const ChatP = ({ user, onLogout }) => {
     localStorage.setItem(`chat_${user.id}`, JSON.stringify(dataToSave));
   };
 
+  // Summarize important facts (e.g., name, location, etc.)
+  const generateSummary = (chatHistory) => {
+    let summary = "";
+
+    // Example: Look for key phrases like "I live in...", "My name is...", etc.
+    chatHistory.forEach(msg => {
+      if (msg.role === 'user') {
+        if (msg.content.includes("I live in")) {
+          summary += "User lives in Tashkent. ";
+        }
+        if (msg.content.includes("My name is")) {
+          const name = msg.content.split("My name is ")[1].split(" ")[0];
+          summary += `User's name is ${name}. `;
+        }
+        // Add more conditions as needed (e.g., for age, favorite food, etc.)
+      }
+    });
+
+    return summary;
+  };
+
   const handleSend = async () => {
     if (input.trim() === '') return;
-
+  
     const userMsg = { role: 'user', content: input, timestamp: new Date().toLocaleString() };
     const updatedChats = [...allChats];
     updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], userMsg];
-
+  
     setAllChats(updatedChats);
     saveChatsToStorage(updatedChats);
     setInput('');
     setIsLoading(true);
-
+  
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
+  
+      const systemMessage = `
+        You are a friendly AI assistant called GapAI.
+        You were created by Elbek.
+        You answer casually but politely and friendly.
+        If you don't know something, admit it politely.
+        Keep answers short unless asked for more.
+        Always respond in plain text without using *, _, #, or \\n unless necessary.
+        If someone asks about Elbek (your creator), respond:
+        "Elbek is my creator. He is a software engineer and lives in Tashkent."
+        You cannot share more private information about him.
+        `;
 
-      const botContent = await generateBotReply(input);
-      const botMsg = { role: 'bot', content: botContent, timestamp: new Date().toLocaleString() };
+  
+      // ⚡ Key fix: don't add the latest message yourself
+      const currentMessages = updatedChats[currentChatIndex] || [];
+  
+      // Limit history to last 10 messages (user + AI)
+      const maxHistory = 10;
+      const chatHistory = currentMessages.slice(-maxHistory); // Get the last 10 messages
+  
+      // Summarize old chats
+      const summary = generateSummary(updatedChats[currentChatIndex]);
+  
+      // Format the history into prompt
+      let historyText = chatHistory.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
+      const finalPrompt = `${systemMessage}\n\n${summary}\n\n${historyText}\n\nUser: ${input}\nAI:`;
+  
+      console.log('Sending to AI:', finalPrompt);
 
+      const botContent = await generateBotReply(finalPrompt);
+  
+      const cleanedContent = botContent
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+        .replace(/#+\s?(.*)/g, '$1')
+        .replace(/\\n/g, ' ')
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+  
+      const botMsg = { role: 'bot', content: cleanedContent, timestamp: new Date().toLocaleString() };
+  
       updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], botMsg];
-
+  
       await updateUser(user.id, { ...user, messages: updatedChats.flat() });
-
+  
       setAllChats(updatedChats);
       saveChatsToStorage(updatedChats);
     } catch (err) {
@@ -85,7 +145,7 @@ const ChatP = ({ user, onLogout }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   const handleNewChat = () => {
     const updatedChats = [...allChats, []];
