@@ -46,7 +46,7 @@
         background-color: rgb(143, 59, 199);
     }
     &-extra-info {
-        position: fixed;
+        position: absolute;
         bottom: calc(env(safe-area-inset-bottom, 0px) + 3%);
         width: 100%;
         text-align: center;
