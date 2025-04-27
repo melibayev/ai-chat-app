@@ -111,7 +111,7 @@ function RegisterP({ onLogin }) {
           <GoogleLogin
             onSuccess={handleGoogleLogin} // on successful login
             onError={() => alert("Google login failed!")}
-            useOneTap  // Optional: Enables one-tap login for a smoother experience
+            clientId="993424580595-ovq1r18nuvl1pj2ctlf7uk68ph0btj4r.apps.googleusercontent.com"
             prompt="select_account"
           />
         </div>
