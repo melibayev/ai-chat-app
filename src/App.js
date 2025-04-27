@@ -27,22 +27,30 @@ function App() {
     }
   }, []);
   useEffect(() => {
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 1) return; // allow pinch-zoom (but we disabled zoom anyway)
-      const touch = e.touches[0];
-      if (touch.clientX < 50 || touch.clientX > window.innerWidth - 50) {
-        // If user starts swiping from edge of the screen → allow (for iOS Back gesture)
-        return;
-      }
-      e.preventDefault(); // otherwise, block swipe
+    let touchStartX = 0;
+  
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
     };
-
-    document.body.addEventListener('touchmove', handleTouchMove, { passive: false });
-
+  
+    const handleTouchMove = (e) => {
+      const touchX = e.touches[0].clientX;
+  
+      if (touchStartX < 30 && touchX > touchStartX + 10) {
+        // User is trying to swipe back from the left edge
+        e.preventDefault();
+      }
+    };
+  
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  
     return () => {
-      document.body.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
     };
   }, []);
+  
 
   return (
     <BrowserRouter>
