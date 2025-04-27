@@ -28,6 +28,7 @@
   
 
   body {
+    overflow-y: scroll;
     font-family: 'Sora', sans-serif;
     background-color: rgb(20, 0, 34);
   }  

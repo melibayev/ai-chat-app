@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { registerUser } from "../api";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
+import styles from '../scss/Register.module.scss'
 
 function RegisterP({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -26,26 +28,34 @@ function RegisterP({ onLogin }) {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">Register</h2>
+    <>
+    <div className={styles['register-banner']}>
+      <h2>Sign Up</h2>
+      <p>Create your account</p>
+    </div>
+    <div className={styles['register']}>
+      <div className={styles['register-inputs']}>
       <input
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="border p-2 mb-2 w-full"
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="border p-2 mb-2 w-full"
       />
-      <button onClick={handleRegister} className="bg-blue-500 text-white px-4 py-2 rounded w-full">
+      </div>
+      <button onClick={handleRegister}>
         Register
       </button>
     </div>
+    <div className={styles['register-extra-info']}>
+      Already have an account? <NavLink to={'/login'}>Log In</NavLink>
+    </div>
+    </>
   );
 }
 

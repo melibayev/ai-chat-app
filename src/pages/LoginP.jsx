@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { fetchUsers } from '../api';
+
+import styles from '../scss/Login.module.scss'
 
 const LoginP = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -35,8 +37,13 @@ const LoginP = ({ onLogin }) => {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
+    <>
+    <div className={styles['login-banner']}>
+      <h2>Sign In to your Account</h2>
+      <p>Sign in to your Account</p>
+    </div>
+    <div className={styles['login']}>
+      <div className={styles['login-inputs']}>
       <input
         type="text"
         placeholder="Username"
@@ -51,8 +58,13 @@ const LoginP = ({ onLogin }) => {
         onChange={(e) => setPassword(e.target.value)}
         className="border p-2 mb-2 w-full"
       />
-      <button onClick={handleLogin} className="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+      </div>
+      <button onClick={handleLogin}>Log In</button>
     </div>
+    <div className={styles['login-extra-info']}>
+      Don't have an account? <NavLink to={'/register'}>Register</NavLink>
+    </div>
+    </>
   );
 };
 

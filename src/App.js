@@ -26,23 +26,23 @@ function App() {
       setUser(JSON.parse(storedUser));
     }
   }, []);
-  useEffect(() => {
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 1) return; // allow pinch-zoom (but we disabled zoom anyway)
-      const touch = e.touches[0];
-      if (touch.clientX < 50 || touch.clientX > window.innerWidth - 50) {
-        // If user starts swiping from edge of the screen → allow (for iOS Back gesture)
-        return;
-      }
-      e.preventDefault(); // otherwise, block swipe
-    };
+  // useEffect(() => {
+  //   const handleTouchMove = (e) => {
+  //     if (e.touches.length > 1) return; // allow pinch-zoom (but we disabled zoom anyway)
+  //     const touch = e.touches[0];
+  //     if (touch.clientX < 50 || touch.clientX > window.innerWidth - 50) {
+  //       // If user starts swiping from edge of the screen → allow (for iOS Back gesture)
+  //       return;
+  //     }
+  //     e.preventDefault(); // otherwise, block swipe
+  //   };
 
-    document.body.addEventListener('touchmove', handleTouchMove, { passive: false });
+  //   document.body.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-    return () => {
-      document.body.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
+  //   return () => {
+  //     document.body.removeEventListener('touchmove', handleTouchMove);
+  //   };
+  // }, []);
 
   return (
     <BrowserRouter>
