@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { updateUser, generateBotReply } from '../api';
+import { updateUser, generateBotReply } from '../api'; 
 import styles from '../scss/Chat.module.scss';
 import { FiSend } from "react-icons/fi";
 import { FaChevronLeft } from "react-icons/fa";
 
 const ChatP = ({ user, onLogout }) => {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState(user ? user.messages : []);
+  const [allChats, setAllChats] = useState([]); // all chats
+  const [currentChatIndex, setCurrentChatIndex] = useState(0); // which chat is active
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -15,42 +16,77 @@ const ChatP = ({ user, onLogout }) => {
   };
 
   useEffect(() => {
-    scrollToBottom(); // Scroll whenever messages update
-  }, [messages]);
+    const fetchChats = async () => {
+      if (user) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(`chat_${user.id}`));
+          if (saved && saved.chats) {
+            setAllChats(saved.chats);
+            setCurrentChatIndex(0); // open the first chat by default
+          } else {
+            setAllChats([[]]); // start with one empty chat
+          }
+        } catch (error) {
+          console.error('Error loading chats from localStorage:', error);
+          setAllChats([[]]);
+        }
+      }
+    };
+
+    fetchChats();
+  }, [user]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [allChats, currentChatIndex]);
+
+  const saveChatsToStorage = (updatedChats) => {
+    localStorage.setItem(`chat_${user.id}`, JSON.stringify({ chats: updatedChats }));
+  };
 
   const handleSend = async () => {
-    if (input.trim() === '') {
-      return;
-    }
+    if (input.trim() === '') return;
 
     const userMsg = { role: 'user', content: input, timestamp: new Date().toLocaleString() };
-    const updatedMessages = [...messages, userMsg];
+    const updatedChats = [...allChats];
+    updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], userMsg];
 
-    setMessages(updatedMessages);
+    setAllChats(updatedChats);
+    saveChatsToStorage(updatedChats);
     setInput('');
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1s delay for "typing..."
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
 
       const botContent = await generateBotReply(input);
       const botMsg = { role: 'bot', content: botContent, timestamp: new Date().toLocaleString() };
 
-      const finalMessages = [...updatedMessages, botMsg];
+      updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], botMsg];
 
-      await updateUser(user.id, { ...user, messages: finalMessages });
+      await updateUser(user.id, { ...user, messages: updatedChats.flat() });
 
-      setMessages(finalMessages);
+      setAllChats(updatedChats);
+      saveChatsToStorage(updatedChats);
     } catch (err) {
-      console.error('Error updating user or generating reply:', err);
+      console.error('Error:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleNewChat = () => {
+    const updatedChats = [...allChats, []]; // add new empty chat
+    setAllChats(updatedChats);
+    setCurrentChatIndex(updatedChats.length - 1); // switch to the new chat
+    saveChatsToStorage(updatedChats);
+  };
+
   if (!user) {
     return <div>Error: User not found. Please log in again.</div>;
   }
+
+  const currentMessages = allChats[currentChatIndex] || [];
 
   return (
     <div className={styles['chat']}>
@@ -59,10 +95,17 @@ const ChatP = ({ user, onLogout }) => {
           <FaChevronLeft />
         </div>
         <h2 className="text-xl font-bold">Chat</h2>
+
+        <button 
+          onClick={handleNewChat}
+          className="ml-auto px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+        >
+          New Chat
+        </button>
       </div>
 
       <div className={styles['chat-container']}>
-        {messages.map((m, i) => (
+        {currentMessages.map((m, i) => (
           <div key={i} className="space-y-2">
             {m.role === 'user' ? (
               <div className={styles['chat-user']}>
@@ -84,7 +127,7 @@ const ChatP = ({ user, onLogout }) => {
             <div className={styles['chat-ai-message']}>Typing...</div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 

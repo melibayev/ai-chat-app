@@ -94,7 +94,7 @@
     display: flex;
     justify-content: center;
     column-gap: 12px;
-    padding: 10px 0;
+    padding: 10px 0 50px;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     background-color: #fff;
@@ -102,7 +102,7 @@
     textarea {
         padding: 16px 24px;
         width: 70%;
-        font-size: 18px;
+        font-size: 20px;
         resize: none;
         border: none;
         overflow: scroll;
