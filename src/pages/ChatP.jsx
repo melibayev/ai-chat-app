@@ -6,6 +6,7 @@ import { FaChevronLeft } from "react-icons/fa";
 
 import AI_IMAGE from '../assets/images/ai.jpg'
 import USER_IMAGE from '../assets/images/user.jpg'
+import { NavLink } from 'react-router-dom';
 
 const ChatP = ({ user, onLogout }) => {
   const [input, setInput] = useState('');
@@ -169,9 +170,11 @@ const ChatP = ({ user, onLogout }) => {
   return (
     <div className={styles['chat']}>
       <div className={styles['chat-title']}>
-          <div>
-          <FaChevronLeft />
-          </div>
+          <NavLink to={'/home'}>
+            <div>
+              <FaChevronLeft />
+            </div>
+          </NavLink>
           <h2 className="text-xl font-bold">Chat</h2>
 
         <div className="ml-auto flex gap-2">

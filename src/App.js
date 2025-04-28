@@ -5,6 +5,7 @@ import GetStartedP from "./pages/GetStartedP";
 import RegisterP from "./pages/RegisterP";
 import LoginP from "./pages/LoginP";
 
+const HomeP = lazy(() => import("./pages/HomeP"));  // HomeP Component
 const ChatP = lazy(() => import("./pages/ChatP"));
 
 function App() {
@@ -26,23 +27,6 @@ function App() {
       setUser(JSON.parse(storedUser));
     }
   }, []);
-  // useEffect(() => {
-  //   const handleTouchMove = (e) => {
-  //     if (e.touches.length > 1) return; // allow pinch-zoom (but we disabled zoom anyway)
-  //     const touch = e.touches[0];
-  //     if (touch.clientX < 50 || touch.clientX > window.innerWidth - 50) {
-  //       // If user starts swiping from edge of the screen → allow (for iOS Back gesture)
-  //       return;
-  //     }
-  //     e.preventDefault(); // otherwise, block swipe
-  //   };
-
-  //   document.body.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-  //   return () => {
-  //     document.body.removeEventListener('touchmove', handleTouchMove);
-  //   };
-  // }, []);
 
   return (
     <BrowserRouter>
@@ -52,6 +36,20 @@ function App() {
           <Route path="/get-started" element={<GetStartedP />} />
           <Route path="/login" element={<LoginP onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterP onLogin={handleLogin} />} />
+
+          {/* If user is logged in, redirect to HomeP first */}
+          <Route
+            path="/"
+            element={user ? <Navigate to="/home" /> : <Navigate to="/login" />}
+          />
+
+          {/* Home page: Accessible if user is logged in */}
+          <Route
+            path="/home"
+            element={user ? <HomeP /> : <Navigate to="/login" />}
+          />
+
+          {/* Chat page: Accessible if user is logged in */}
           <Route
             path="/chat"
             element={user ? <ChatP user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}

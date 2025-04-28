@@ -42,3 +42,15 @@ export const generateBotReply = async (msg) => {
     return 'Error generating response.';
   }
 };
+// src/api.js
+
+// Check if username already exists
+export const checkUsernameExists = async (username) => {
+  try {
+    const response = await axios.get(`${API_URL}?username=${username}`);
+    return response.data.length > 0;  // If any user matches the username, it exists
+  } catch (error) {
+    console.error("Error checking username:", error);
+    return false;  // In case of error, assume username does not exist
+  }
+};

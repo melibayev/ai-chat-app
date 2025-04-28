@@ -28,7 +28,7 @@ const LoginP = ({ onLogin }) => {
     // Check if user is already logged in
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      navigate('/chat');
+      navigate('/home', { replace: true });
     }
   }, [navigate]);  // Run when navigate is ready
 
@@ -38,7 +38,7 @@ const LoginP = ({ onLogin }) => {
     );
     if (foundUser) {
       onLogin(foundUser);
-      navigate('/chat');
+      navigate('/home', { replace: true });
     } else {
       alert('Invalid credentials!');
     }
@@ -62,7 +62,7 @@ const LoginP = ({ onLogin }) => {
       if (foundUser) {
         // If user is found, log them in
         onLogin(foundUser);
-        navigate('/chat');
+        navigate('/home', { replace: true });
       } else {
         // Handle case where user doesn't exist
         alert("This Google account is not registered. Please register first.");
@@ -72,6 +72,9 @@ const LoginP = ({ onLogin }) => {
       alert("Google login failed! Please try again.");
     }
   };
+
+  
+
 
   return (
     <>

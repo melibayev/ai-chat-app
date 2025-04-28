@@ -1,49 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { registerUser } from "../api";
+import React, { useState } from "react";
+import { registerUser, checkUsernameExists } from "../api";
 import { NavLink, useNavigate } from "react-router-dom";
-import { GoogleLogin } from '@react-oauth/google'; // import Google Login component
+import { GoogleLogin } from '@react-oauth/google'; 
 
 import styles from '../scss/Register.module.scss';
 
 function RegisterP({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);  // Add loading state
+  const [isLoading, setIsLoading] = useState(false); 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // Wait for the Google login button to be rendered and then change the text
-  //   const googleButtonSpan = document.querySelector('[role="button"] span');
-  //   if (googleButtonSpan) {
-  //     googleButtonSpan.textContent = "Continue with Google"; // Change text after component mounts
-  //   }
-  // }, []);
-
   const handleRegister = async () => {
-    setIsLoading(true);  // Set loading state
+    // Check if fields are empty
+    if (!username.trim() || !password.trim()) {
+      alert("Please fill in both username and password.");
+      return; 
+    }
+
+    // Check if the username already exists
+    const usernameExists = await checkUsernameExists(username);
+    if (usernameExists) {
+      alert("Username already exists, please choose another.");
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const userData = await registerUser({ username, password, messages: [] });
       alert("Registered successfully!");
 
-      // Store the user in localStorage
       localStorage.setItem("user", JSON.stringify(userData.data));
-
-      // Call onLogin to update the user state in App.js
       onLogin(userData.data);
 
-      // Navigate to the Chat page after registration
-      navigate("/chat");
+      navigate('/chat', { replace: true }); 
     } catch (error) {
       console.error("Error registering:", error);
       alert("Registration failed, please try again.");
     } finally {
-      setIsLoading(false);  // Set loading state to false
+      setIsLoading(false);
     }
   };
 
   // Google login success handler
   const handleGoogleLogin = async (credentialResponse) => {
-    setIsLoading(true);  // Set loading state
+    setIsLoading(true);
     try {
       const token = credentialResponse.credential;
       const base64Url = token.split('.')[1];
@@ -54,27 +55,23 @@ function RegisterP({ onLogin }) {
 
       const userData = JSON.parse(jsonPayload);
       const user = {
-        username: userData.email,  // Google username (email)
-        password: "google_login", // A mock password, consider generating or handling securely
+        username: userData.email,  
+        password: "google_login", // Mock password
       };
 
-      // Send the user data to your mock API to create the account
       const apiResponse = await registerUser(user);
       alert("User registered successfully with Google!");
 
-      // Store the user in localStorage
       localStorage.setItem("user", JSON.stringify(apiResponse.data));
 
-      // Call onLogin to update the user state in App.js
       onLogin(apiResponse.data);
 
-      // Navigate to the Chat page after registration
-      navigate("/chat");
+      navigate('/chat', { replace: true });
     } catch (error) {
       console.error("Google login failed:", error);
       alert("Google login failed! Please try again.");
     } finally {
-      setIsLoading(false);  // Set loading state to false
+      setIsLoading(false); 
     }
   };
 
@@ -91,17 +88,17 @@ function RegisterP({ onLogin }) {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            disabled={isLoading}  // Disable input during loading
+            disabled={isLoading}  
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            disabled={isLoading}  // Disable input during loading
+            disabled={isLoading}  
           />
         </div>
-        <button onClick={handleRegister} disabled={isLoading}> {/* Disable button during loading */}
+        <button onClick={handleRegister} disabled={isLoading}>
           {isLoading ? "Registering..." : "Register"}
         </button>
         <div className={styles['or-divider']}>
@@ -109,9 +106,9 @@ function RegisterP({ onLogin }) {
         </div>
         <div className="google-login">
           <GoogleLogin
-            onSuccess={handleGoogleLogin} // on successful login
+            onSuccess={handleGoogleLogin} 
             onError={() => alert("Google login failed!")}
-            clientId="993424580595-ovq1r18nuvl1pj2ctlf7uk68ph0btj4r.apps.googleusercontent.com"
+            clientId="YOUR_GOOGLE_CLIENT_ID"
             prompt="select_account"
           />
         </div>
