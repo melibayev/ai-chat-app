@@ -32,9 +32,10 @@ function HomeP() {
   }, []);
 
   useEffect(() => {
-    if (videoRef.current && !videoRef.current.played) {
+    const videoPlayed = localStorage.getItem('videoPlayed');
+    if (!videoPlayed && videoRef.current) {
       videoRef.current.play();
-      videoRef.current.played = true; // Flag that the video has been played
+      localStorage.setItem('videoPlayed', 'true');
     }
   }, []);
 
