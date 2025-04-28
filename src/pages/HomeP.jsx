@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../scss/Home.module.scss';
 import Slider from 'react-slick';
@@ -11,6 +11,7 @@ function HomeP() {
   const [recentChats, setRecentChats] = useState([]);
   const [titles, setTitles] = useState([]);
   const navigate = useNavigate();
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -27,6 +28,13 @@ function HomeP() {
         setRecentChats(firstMessages);
         setTitles(titles.slice(-3).reverse()); // Get last 3 titles
       }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current && !videoRef.current.played) {
+      videoRef.current.play();
+      videoRef.current.played = true; // Flag that the video has been played
     }
   }, []);
 
@@ -79,6 +87,7 @@ function HomeP() {
 
       <div className={styles['home-premium-offer']}>
         <video
+          ref={videoRef}
           playsInline
           muted
           autoPlay
