@@ -5,13 +5,13 @@ import Slider from 'react-slick';
 import { FaCrown } from "react-icons/fa";
 
 import GALAXY_BG from '../assets/videos/galaxy.mp4';
+import GALAXY_IMG from '../assets/images/galaxy.jpg';
 import USER_IMG from '../assets/images/user.jpg';
 
 function HomeP() {
   const [recentChats, setRecentChats] = useState([]);
   const [titles, setTitles] = useState([]);
   const navigate = useNavigate();
-  const videoRef = useRef(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -28,14 +28,6 @@ function HomeP() {
         setRecentChats(firstMessages);
         setTitles(titles.slice(-3).reverse()); // Get last 3 titles
       }
-    }
-  }, []);
-
-  useEffect(() => {
-    const videoPlayed = localStorage.getItem('videoPlayed');
-    if (!videoPlayed && videoRef.current) {
-      videoRef.current.play();
-      localStorage.setItem('videoPlayed', 'true');
     }
   }, []);
 
@@ -88,10 +80,12 @@ function HomeP() {
 
       <div className={styles['home-premium-offer']}>
         <video
-          ref={videoRef}
           playsInline
           muted
           autoPlay
+          loop
+          preload="auto"
+          poster="/path/to/preview.jpg"
           src={GALAXY_BG}
           tabIndex="-1"
           aria-hidden="true"
