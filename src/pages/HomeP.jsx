@@ -97,8 +97,10 @@ function HomeP() {
         </div>
       </div>
 
-      <div className={styles['home-automation']}>
+      <div className={styles['home-automation-title']}>
         <h2>Suggestions</h2>
+      </div>
+      <div className={styles['home-automation']}>
         <Slider {...settings}>
         <div>
             <div className={styles['home-automation-slick']}>
