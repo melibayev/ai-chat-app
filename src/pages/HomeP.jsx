@@ -65,7 +65,7 @@ function HomeP() {
 
     // Navigate to the new chat page
     localStorage.setItem('selectedChatIndex', updatedChats.length - 1);
-    navigate('/chat'); // Navigate to the chat page
+    navigate('/chat', { replace: true });
   };
 
   const settings = {

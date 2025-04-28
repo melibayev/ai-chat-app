@@ -188,7 +188,8 @@ const ChatP = ({ user, onLogout }) => {
   
     // Save the updated data to localStorage
     saveChatsToStorage(updatedChats, updatedTitles, updatedSummaries);
-    navigate('/home'); 
+    navigate('/home', { replace: true });
+ 
   };
   const handleLogout = () => {
     if (onLogout) {
@@ -219,7 +220,8 @@ const ChatP = ({ user, onLogout }) => {
       }
     }
   
-    navigate('/home'); 
+    navigate('/home', { replace: true });
+ 
   };
   
   
