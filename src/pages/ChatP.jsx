@@ -169,7 +169,27 @@ const ChatP = ({ user, onLogout }) => {
     setSummaries([...summaries, "No summary available."]);
     saveChatsToStorage(updatedChats, [...titles, "Untitled Chat"], [...summaries, "No summary available."]);
   };
-
+  const handleDeleteChat = () => {
+    // Remove the current chat from the array
+    const updatedChats = [...allChats];
+    const updatedTitles = [...titles];
+    const updatedSummaries = [...summaries];
+  
+    updatedChats.splice(currentChatIndex, 1); // Remove the current chat
+    updatedTitles.splice(currentChatIndex, 1); // Remove the corresponding title
+    updatedSummaries.splice(currentChatIndex, 1); // Remove the corresponding summary
+  
+    // If there are chats left, update the currentChatIndex to point to the last chat
+    const newIndex = updatedChats.length > 0 ? updatedChats.length - 1 : 0;
+    setCurrentChatIndex(newIndex);
+    setAllChats(updatedChats);
+    setTitles(updatedTitles);
+    setSummaries(updatedSummaries);
+  
+    // Save the updated data to localStorage
+    saveChatsToStorage(updatedChats, updatedTitles, updatedSummaries);
+    navigate('/home'); 
+  };
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
@@ -199,7 +219,7 @@ const ChatP = ({ user, onLogout }) => {
       }
     }
   
-    navigate('/home'); // finally go home
+    navigate('/home'); 
   };
   
   
@@ -220,10 +240,10 @@ const ChatP = ({ user, onLogout }) => {
 
           <div className="ml-auto flex gap-2">
             <button 
-              onClick={handleNewChat}
+              onClick={handleDeleteChat}
               className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             >
-              New Chat
+              Delete
             </button>
 
             <button 
