@@ -21,6 +21,7 @@
     }
     &-premium-offer {
         width: 100%;
+        height: 200px;
         position: relative;
         video {
             position: absolute;
@@ -109,6 +110,10 @@
         }
         button {
             display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            column-gap: 12px;
             width: 100%;
             font-size: 18px;
             font-weight: 600;

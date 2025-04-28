@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../scss/Home.module.scss';
 import Slider from 'react-slick';
 import { FaCrown } from "react-icons/fa";
+import { MdOpenInNew } from "react-icons/md";
 
 import GALAXY_BG from '../assets/videos/galaxy.mp4';
 import GALAXY_IMG from '../assets/images/galaxy.jpg';
@@ -85,7 +86,7 @@ function HomeP() {
           autoPlay
           loop
           preload="auto"
-          poster="/path/to/preview.jpg"
+          poster={GALAXY_IMG}
           src={GALAXY_BG}
           tabIndex="-1"
           aria-hidden="true"
@@ -173,7 +174,7 @@ function HomeP() {
       </div>
 
       <div className={styles['home-new-chat-button']}>
-        <button onClick={handleNewChat}>New Chat</button>
+        <button onClick={handleNewChat}><MdOpenInNew /> New Chat</button>
       </div>
     </div>
   );
