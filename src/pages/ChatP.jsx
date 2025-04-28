@@ -3,20 +3,24 @@ import { updateUser, generateBotReply } from '../api';
 import styles from '../scss/Chat.module.scss';
 import { FiSend } from "react-icons/fi";
 import { FaChevronLeft } from "react-icons/fa";
+import { NavLink, useNavigate } from 'react-router-dom'; // ✅ we'll use useNavigate for smarter home redirection
 
-import AI_IMAGE from '../assets/images/ai.jpg'
-import USER_IMAGE from '../assets/images/user.jpg'
-import { NavLink } from 'react-router-dom';
+import AI_IMAGE from '../assets/images/ai.jpg';
+import USER_IMAGE from '../assets/images/user.jpg';
 
 const ChatP = ({ user, onLogout }) => {
   const [input, setInput] = useState('');
   const [allChats, setAllChats] = useState([]);
+  const [titles, setTitles] = useState([]);
+  const [summaries, setSummaries] = useState([]);
   const [currentChatIndex, setCurrentChatIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null); // reference to scroll to bottom
+  const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
+  const chatIndexFromState = localStorage.getItem('selectedChatIndex') || 0;
+  
   const scrollToBottom = () => {
-    // Scroll to the bottom to show the latest message
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -25,9 +29,11 @@ const ChatP = ({ user, onLogout }) => {
       if (user) {
         try {
           const saved = JSON.parse(localStorage.getItem(`chat_${user.id}`));
-          if (saved && saved.chats) {
-            setAllChats(saved.chats);
-            setCurrentChatIndex(0);
+          if (saved) {
+            setAllChats(saved.chats || [[]]);
+            setTitles(saved.titles || []);
+            setSummaries(saved.summaries || []);
+            setCurrentChatIndex(chatIndexFromState);
           } else {
             setAllChats([[]]);
           }
@@ -41,27 +47,26 @@ const ChatP = ({ user, onLogout }) => {
     fetchChats();
   }, [user]);
 
-  // Scroll when a new message is added, including AI and user messages.
   useEffect(() => {
     scrollToBottom();
-  }, [allChats, currentChatIndex, isLoading]); // Add input and isLoading to the dependency array
+  }, [allChats, currentChatIndex, isLoading]);
 
-  const saveChatsToStorage = (updatedChats) => {
+  const saveChatsToStorage = (updatedChats, updatedTitles, updatedSummaries) => {
     if (!user) return;
 
     const dataToSave = {
       username: user.username,
       chats: updatedChats,
+      titles: updatedTitles,
+      summaries: updatedSummaries,
     };
 
     localStorage.setItem(`chat_${user.id}`, JSON.stringify(dataToSave));
   };
 
-  // Summarize important facts (e.g., name, location, etc.)
-  const generateSummary = (chatHistory) => {
+  const generateSimpleSummary = (chatHistory) => {
     let summary = "";
 
-    // Example: Look for key phrases like "I live in...", "My name is...", etc.
     chatHistory.forEach(msg => {
       if (msg.role === 'user') {
         if (msg.content.includes("I live in")) {
@@ -71,28 +76,46 @@ const ChatP = ({ user, onLogout }) => {
           const name = msg.content.split("My name is ")[1].split(" ")[0];
           summary += `User's name is ${name}. `;
         }
-        // Add more conditions as needed (e.g., for age, favorite food, etc.)
       }
     });
 
     return summary;
   };
 
+  const generateSmartTitle = async (chatHistory) => {
+    const historyText = chatHistory.slice(0, 5).map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
+
+    const prompt = `
+    Based on the following chat history, generate a short, clear title (max 6 words) that describes the topic:
+    ---
+    ${historyText}
+    ---
+    Title:`;
+
+    try {
+      const response = await generateBotReply(prompt);
+      return response.split('\n')[0].replace(/[^a-zA-Z0-9\s]/g, '').trim(); // clean weird characters
+    } catch (error) {
+      console.error('Error generating title:', error);
+      return "Untitled Chat";
+    }
+  };
+
   const handleSend = async () => {
     if (input.trim() === '') return;
-  
+
     const userMsg = { role: 'user', content: input, timestamp: new Date().toLocaleString() };
     const updatedChats = [...allChats];
     updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], userMsg];
-  
+
     setAllChats(updatedChats);
-    saveChatsToStorage(updatedChats);
+    saveChatsToStorage(updatedChats, titles, summaries);
     setInput('');
     setIsLoading(true);
-  
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
-  
+
       const systemMessage = `
         You are a friendly AI assistant called GapAI.
         You were created by Elbek.
@@ -105,25 +128,15 @@ const ChatP = ({ user, onLogout }) => {
         You cannot share more private information about him.
         `;
 
-  
-      // ⚡ Key fix: don't add the latest message yourself
-      const currentMessages = updatedChats[currentChatIndex] || [];
-  
-      // Limit history to last 10 messages (user + AI)
-      const maxHistory = 10;
-      const chatHistory = currentMessages.slice(-maxHistory); // Get the last 10 messages
-  
-      // Summarize old chats
-      const summary = generateSummary(updatedChats[currentChatIndex]);
-  
-      // Format the history into prompt
-      let historyText = chatHistory.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
-      const finalPrompt = `${systemMessage}\n\n${summary}\n\n${historyText}\n\nUser: ${input}\nAI:`;
-  
-      console.log('Sending to AI:', finalPrompt);
+      const chatHistory = updatedChats[currentChatIndex].slice(-10);
 
+      const summary = generateSimpleSummary(updatedChats[currentChatIndex]);
+      const historyText = chatHistory.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
+      const finalPrompt = `${systemMessage}\n\n${summary}\n\n${historyText}\n\nUser: ${input}\nAI:`;
+      console.log(finalPrompt);
+      
       const botContent = await generateBotReply(finalPrompt);
-  
+
       const cleanedContent = botContent
         .replace(/\*\*(.*?)\*\*/g, '$1')
         .replace(/_(.*?)_/g, '$1')
@@ -132,27 +145,29 @@ const ChatP = ({ user, onLogout }) => {
         .replace(/\n/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-  
+
       const botMsg = { role: 'bot', content: cleanedContent, timestamp: new Date().toLocaleString() };
-  
+
       updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], botMsg];
-  
+
       await updateUser(user.id, { ...user, messages: updatedChats.flat() });
-  
+
       setAllChats(updatedChats);
-      saveChatsToStorage(updatedChats);
+      saveChatsToStorage(updatedChats, titles, summaries);
     } catch (err) {
       console.error('Error:', err);
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   const handleNewChat = () => {
     const updatedChats = [...allChats, []];
     setAllChats(updatedChats);
     setCurrentChatIndex(updatedChats.length - 1);
-    saveChatsToStorage(updatedChats);
+    setTitles([...titles, "Untitled Chat"]);
+    setSummaries([...summaries, "No summary available."]);
+    saveChatsToStorage(updatedChats, [...titles, "Untitled Chat"], [...summaries, "No summary available."]);
   };
 
   const handleLogout = () => {
@@ -160,6 +175,34 @@ const ChatP = ({ user, onLogout }) => {
       onLogout();
     }
   };
+
+  const handleBackHome = async () => {
+    // Check if the title is "Untitled Chat" or if it's the first time
+    if (!titles[currentChatIndex] || titles[currentChatIndex] === "Untitled Chat") {
+      try {
+        const title = await generateSmartTitle(allChats[currentChatIndex]);
+        const simpleSummary = generateSimpleSummary(allChats[currentChatIndex]);
+  
+        const updatedTitles = [...titles];
+        const updatedSummaries = [...summaries];
+  
+        // Set the new title and summary
+        updatedTitles[currentChatIndex] = title || "Untitled Chat";
+        updatedSummaries[currentChatIndex] = simpleSummary || "No summary.";
+  
+        setTitles(updatedTitles);
+        setSummaries(updatedSummaries);
+  
+        saveChatsToStorage(allChats, updatedTitles, updatedSummaries);
+      } catch (error) {
+        console.error('Error generating title/summary:', error);
+      }
+    }
+  
+    navigate('/home'); // finally go home
+  };
+  
+  
 
   if (!user) {
     return <div>Error: User not found. Please log in again.</div>;
@@ -170,28 +213,26 @@ const ChatP = ({ user, onLogout }) => {
   return (
     <div className={styles['chat']}>
       <div className={styles['chat-title']}>
-          <NavLink to={'/home'}>
-            <div>
-              <FaChevronLeft />
-            </div>
-          </NavLink>
+          <div onClick={handleBackHome}>
+            <FaChevronLeft />
+          </div>
           <h2 className="text-xl font-bold">Chat</h2>
 
-        <div className="ml-auto flex gap-2">
-          <button 
-            onClick={handleNewChat}
-            className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          >
-            New Chat
-          </button>
+          <div className="ml-auto flex gap-2">
+            <button 
+              onClick={handleNewChat}
+              className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              New Chat
+            </button>
 
-          <button 
-            onClick={handleLogout}
-            className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
-        </div>
+            <button 
+              onClick={handleLogout}
+              className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </div>
       </div>
 
       <div className={styles['chat-container']}>
@@ -200,14 +241,14 @@ const ChatP = ({ user, onLogout }) => {
             {m.role === 'user' ? (
               <div className={styles['chat-user']}>
                 <div className={styles['chat-user-avatar']}>
-                  <img src={USER_IMAGE} alt="" />
+                  <img src={USER_IMAGE} alt="User" />
                 </div>
                 <div className={styles['chat-user-message']}>{m.content}</div>
               </div>
             ) : (
               <div className={styles['chat-ai']}>
                 <div className={styles['chat-ai-avatar']}>
-                  <img src={AI_IMAGE} alt="" />
+                  <img src={AI_IMAGE} alt="AI" />
                 </div>
                 <div className={styles['chat-ai-message']}>{m.content}</div>
               </div>
@@ -218,7 +259,7 @@ const ChatP = ({ user, onLogout }) => {
         {isLoading && (
           <div className={styles['chat-ai']}>
             <div className={styles['chat-ai-avatar']}>
-              <img src={AI_IMAGE} alt="" />
+              <img src={AI_IMAGE} alt="AI" />
             </div>
             <div className={styles['chat-ai-message']}>Typing...</div>
           </div>
