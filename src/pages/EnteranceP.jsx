@@ -4,7 +4,7 @@ import LOGO from '../assets/videos/dw.mp4';
 import styles from '../scss/Enterance.module.scss';
 
 // Preload HomeP
-// const preloadHome = () => import('./HomeP');
+const preloadHome = () => import('./HomeP');
 
 const EnteranceP = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const EnteranceP = () => {
 
   useEffect(() => {
     // Preload HomeP immediately
-    // preloadHome();  
+    preloadHome();  
 
     // Stop the video and navigate after 4 seconds
     const timer = setTimeout(() => {
