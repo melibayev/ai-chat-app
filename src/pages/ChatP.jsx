@@ -103,40 +103,65 @@ const ChatP = ({ user, onLogout }) => {
 
   const handleSend = async () => {
     if (input.trim() === '') return;
-
+  
     const userMsg = { role: 'user', content: input, timestamp: new Date().toLocaleString() };
     const updatedChats = [...allChats];
     updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], userMsg];
-
+  
     setAllChats(updatedChats);
     saveChatsToStorage(updatedChats, titles, summaries);
     setInput('');
     setIsLoading(true);
-
+  
+    const retryLimit = 3; // Number of retries
+    const retryDelay = 1000; // Delay between retries in milliseconds
+  
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
-
+  
       const systemMessage = `
-        You are a friendly AI assistant called GapAI.
-        You were created by Elbek.
-        You answer casually but politely and friendly.
-        If you don't know something, admit it politely.
-        Keep answers short unless asked for more.
-        Always respond in plain text without using *, _, #, or \\n unless necessary.
-        Only If someone asks more information about Elbek (your creator), respond:
-        "Elbek is my creator. He is a software engineer and lives in Tashkent."
-        You cannot share more private information about him.
-        `;
-
+        You are a friendly, casually conversational AI assistant named GapAI.
+        You were created by Elbek and say this only if u were asked who created you.
+        Your tone is warm, relaxed, and human-like — like a thoughtful friend.
+        You keep answers short and clear unless the user asks for more.
+        Avoid sounding robotic or overly formal — speak naturally.
+        Be curious, occasionally playful, and engaging. Use light humor where appropriate.
+        Always try to keep the user chatting: if their message is short or ends abruptly, reply with something funny, surprising, or ask a light question to keep the conversation going.
+        Never force it, but gently encourage more interaction in a natural way.
+        If you don't know something, admit it politely without pretending.
+        Avoid *, _, #, or \\n unless absolutely necessary.
+        If asked about Elbek, say:
+        "Elbek is my creator. He is a software engineer."
+        Do not share any additional private details about him.
+      `;
+  
       const chatHistory = updatedChats[currentChatIndex].slice(-10);
-
       const summary = generateSimpleSummary(updatedChats[currentChatIndex]);
       const historyText = chatHistory.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
       const finalPrompt = `${systemMessage}\n\n${summary}\n\n${historyText}\n\nUser: ${input}\nAI:`;
       console.log(finalPrompt);
       
-      const botContent = await generateBotReply(finalPrompt);
-
+      let botContent;
+      let retries = 0;
+  
+      while (retries < retryLimit) {
+        try {
+          botContent = await generateBotReply(finalPrompt);
+          if (botContent) break; // Success, exit the loop
+        } catch (error) {
+          console.error(`Error generating response (Attempt ${retries + 1}):`, error);
+          retries++;
+          if (retries < retryLimit) {
+            console.log('Retrying...');
+            await new Promise(resolve => setTimeout(resolve, retryDelay)); // Wait before retrying
+          }
+        }
+      }
+  
+      if (!botContent) {
+        botContent = "Hmm, looks like I'm a bit slow today! Try asking me again later. 😅";
+      }
+  
       const cleanedContent = botContent
         .replace(/\*\*(.*?)\*\*/g, '$1')
         .replace(/_(.*?)_/g, '$1')
@@ -145,21 +170,27 @@ const ChatP = ({ user, onLogout }) => {
         .replace(/\n/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-
+  
       const botMsg = { role: 'bot', content: cleanedContent, timestamp: new Date().toLocaleString() };
-
+  
       updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], botMsg];
-
+  
       await updateUser(user.id, { ...user, messages: updatedChats.flat() });
-
+  
       setAllChats(updatedChats);
       saveChatsToStorage(updatedChats, titles, summaries);
     } catch (err) {
       console.error('Error:', err);
+      // If retries failed, send a friendly fallback message to keep the chat going
+      const botMsg = { role: 'bot', content: "I'm having a bit of trouble right now, but I'll be back in action soon! 😊", timestamp: new Date().toLocaleString() };
+      updatedChats[currentChatIndex] = [...updatedChats[currentChatIndex], botMsg];
+      setAllChats(updatedChats);
+      saveChatsToStorage(updatedChats, titles, summaries);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const handleNewChat = () => {
     const updatedChats = [...allChats, []];
