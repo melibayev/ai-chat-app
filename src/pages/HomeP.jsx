@@ -123,7 +123,7 @@ function HomeP() {
           </div>
           <div>
             <div className={styles['home-automation-slick']}>
-              <p>Can you tell me a fun fact about space.</p>
+              <p>Can you tell me a fun fact about space?</p>
               <button>Generate</button>
             </div>
           </div>

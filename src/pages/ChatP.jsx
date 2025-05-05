@@ -3,7 +3,8 @@ import { updateUser, generateBotReply } from '../api';
 import styles from '../scss/Chat.module.scss';
 import { FiSend } from "react-icons/fi";
 import { FaChevronLeft } from "react-icons/fa";
-import { NavLink, useNavigate } from 'react-router-dom'; // ✅ we'll use useNavigate for smarter home redirection
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'; // ✅ we'll use useNavigate for smarter home redirection
+import { MdDelete } from "react-icons/md";
 
 import AI_IMAGE from '../assets/images/ai.jpg';
 import USER_IMAGE from '../assets/images/user.jpg';
@@ -270,16 +271,17 @@ const ChatP = ({ user, onLogout }) => {
   return (
     <div className={styles['chat']}>
       <div className={styles['chat-title']}>
-          <div onClick={handleBackHome}>
+          <div onClick={handleBackHome} className={styles['chat-title-back']}>
             <FaChevronLeft />
           </div>
           <h2 className="text-xl font-bold">Chat</h2>
 
-          <div className="ml-auto flex gap-2">
+          <div className={styles['chat-btns']}>
             <button 
               onClick={handleDeleteChat}
-              className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+              className={styles['chat-btns-active']}
             >
+              <MdDelete />
               Delete
             </button>
 

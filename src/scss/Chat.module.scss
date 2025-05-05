@@ -16,21 +16,21 @@
     column-gap: 30px;
     padding: 20px 0;
     margin-bottom: 20px;
-    div {
+    &-back {
         display: inline-flex;
         justify-content: center;
         align-items: center;
         padding: 12px;
-        border: 1px solid #f0efff;
+        border: 1px solid #151820;
         font-size: 28px;
-        background-color: #151820;
+        background-color: #f0efff;
         border-radius: 24px;
         svg {
-            color: #fff;
+            color: #151820;
         }
     }
     h2 {
-        font-size: 48px;
+        font-size: 42px;
         color: #fff;
     }
 }
@@ -135,4 +135,26 @@
     }
 }
 
+.chat-btns {
+    display: flex;
+    column-gap: 10px;
+    button {
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        color: #151820;
+        border: 1px solid #fff;
+        border-radius: 16px;
+        background-color: #f0efff;
+        svg {
+            color: #151820;
+        }
+    }
+    &-active {
+        color: red !important;
+        svg {
+            color: red !important;
+        }
+    }
+}
 
