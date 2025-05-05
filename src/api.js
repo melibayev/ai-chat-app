@@ -8,7 +8,7 @@ export const API_URL = 'https://680add94d5075a76d9891f59.mockapi.io/users';
 // export const GEMINI_API_KEY = 'AIzaSyCJrBODcPP8GH8Pk7ZhiqoXFwkqBfU0P1k';
 
 export const TOGETHER_API_URL = 'https://api.together.xyz/v1/chat/completions';
-export const TOGETHER_API_KEY = '50abaf32d1407b7401726e60daa9054f1b012c4044ddd7fdc1f4464dc959885c'; // Store in .env for safety
+export const TOGETHER_API_KEY = '39addc0122f89968cdd4f11f8d0a6a99132ac5bb9d8dfece99842a84ca4d9852'; // Store in .env for safety
 
 // Fetch all users
 export const fetchUsers = () => axios.get(API_URL);
