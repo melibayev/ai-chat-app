@@ -51,3 +51,22 @@
   .slick-next:before {
     display: none;
   }
+
+  @media (min-width: 700px) {
+    body > * {
+      display: none !important;
+    }
+    body::after {
+      content: "🚫 This app is only available on mobile devices.";
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      font-size: 1.2rem;
+      color: red;
+      background-color: #fff;
+      padding: 2rem;
+    }
+  }
