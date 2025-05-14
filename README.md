@@ -1,4 +1,4 @@
-![GapAI Preview](https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png)
+<img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png" alt="GapAI Preview" width="600"/>
 
 # GapAI 🤖💬
 
