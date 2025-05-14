@@ -1,4 +1,9 @@
-<img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png" alt="GapAI Preview" width="300"/>
+<p align="center">
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/photo_2025-05-05_10-19-42-portrait.png" alt="Home" width="250"/>
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png" alt="Chat" width="250"/>
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/chat.png" alt="Profile" width="250"/>
+</p>
+
 
 # GapAI 🤖💬
 
