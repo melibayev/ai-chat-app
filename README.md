@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/photo_2025-05-05_10-19-42-portrait.png" alt="Home" width="250"/>
-  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png" alt="Chat" width="250"/>
-  
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/photo_2025-05-05_10-19-42-portrait.png" alt="banner" width="250"/>
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/home.png" alt="home" width="250"/>
+  <img src="https://github.com/melibayev/ai-chat-app/blob/main/src/assets/images/chat.png" alt="chat" width="250"/>
 </p>
 
 
